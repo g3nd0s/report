@@ -1,18 +1,36 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-
-sub help {
-  print <<help;
-   +---------------------------------------------------------+
-[ The script takes two parameters, the first is a csv file  ]
-[ the second is a json file.                                ] 
-[ Example: perl script.pl 1.csv 2.json                      ]
-[ Development by l3talka, skype:l3talka                     ]
- +---------------------------------------------------------+
-help
-  
+###############
+my @args;
+@args = @ARGV;
+###############
+sub get_content_from_file {
+  my ($file) = @_;
+  my $content;
+  open(FILE,"$file") or die "$!\n";
+  while (<FILE>) {
+    $content.="$_";
+  }
+  close(FILE);
+  return $content;
+}
+sub oshidanie {
+  my ($ref_array) = @_;
+  my $temp;
+  map {$temp+=$_;} @{$ref_array};
+  my $average = $temp/(($#{$ref_array}+1)*60);
+  undef $temp;
+  my ($hour,$ostatok) = ($average =~ /(\d+)\.(\d+)/);
+  $temp = "0.$ostatok"*60;
+  my $min = ($temp =~/(\d*)\./)[0];
+  undef $temp;
+  my $oshidanie = join(":",$hour,$min);
+  return $oshidanie;
 }
 main: {
-  $ARGV[0] = "-h" ? help() : print "";
+  my @array;
+  map {push(@array,$_)} 400..450;
+  my $ref = \ @array;
+  oshidanie($ref);
 }
